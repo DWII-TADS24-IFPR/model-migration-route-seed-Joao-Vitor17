@@ -2,16 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Contracts\NivelRepositoryInterface;
 use Illuminate\Http\Request;
 
 class NivelController extends Controller
 {
+    protected $nivelRepositorio;
+
+    public function __construct(NivelRepositoryInterface $nivelRepositorio)
+    {
+        $this->nivelRepositorio = $nivelRepositorio;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $nivels = $this->nivelRepositorio->all();
+        return view('nivels.index')->with('nivels', $nivels);
     }
 
     /**
@@ -19,7 +28,7 @@ class NivelController extends Controller
      */
     public function create()
     {
-        //
+        return view('nivels.create');
     }
 
     /**
@@ -27,7 +36,11 @@ class NivelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->nivelRepositorio->create([
+            'nome' => $request->nome,
+        ]);
+
+        return redirect()->route('nivels.index');
     }
 
     /**
